@@ -45,11 +45,6 @@ been built, why, and non-obvious details worth knowing before changing anything.
     still have one if the search result's `address.country_code` resolved.
   - `ink` is a key into the `INKS` palette in `app.js` (navy/crimson/forest/plum/
     sepia/charcoal). `shape` is `circle` / `scallop` / `rect`.
-- `stratus.countryMeta` — cache keyed by country code: `{CC: {region, name}}`, populated
-  lazily from the free REST Countries API (`hydrateCountryMeta()`) whenever a stamp with a
-  country code is saved, and backfilled for any stamps missing it on load
-  (`hydrateAllCountryMeta()`). Used only to compute the Continents stat — never required
-  for the app to function.
 - `stratus.theme` — `"day"`, `"twilight"`, `"night"`, or `"random"` (same atmosphere scheme
   as Cumulus/Cirrus/Nimbus).
 
@@ -59,11 +54,11 @@ been built, why, and non-obvious details worth knowing before changing anything.
   stay well under its shared-usage rate limit (~1 req/sec) — see `searchPlaces()`. Search
   results attribution is shown under the search box per OSM's usage policy; don't remove
   it.
-- **REST Countries** (`restcountries.com/v3.1/alpha/{code}`) — region/continent lookup per
-  country code, used only for the Continents stat. Cached permanently in
-  `stratus.countryMeta` once fetched for a code.
-- Both are free public APIs — no key ever needs to be entered or stored, unlike Cirrus's
-  TMDB/OMDb keys.
+- The Continents stat is resolved from a static ISO2-to-continent table baked into
+  `app.js` (`CONTINENT_BY_CODE`), not a network call. **Do not** reintroduce the free
+  REST Countries API for this — its unauthenticated `v1`–`v4` endpoints were deprecated in
+  favor of a paid-key `v5` (confirmed Oct 2026); the static table is deliberate, not a
+  placeholder.
 
 ## Stamp rendering (`stampSvg()` in app.js)
 - Generates a self-contained inline `<svg>` per stamp. Every `<defs>` id (arc paths, grain

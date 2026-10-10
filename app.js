@@ -1,7 +1,6 @@
 // ---- Storage keys ----
 const THEME_KEY = "stratus.theme";
 const STAMPS_KEY = "stratus.stamps";
-const COUNTRY_META_KEY = "stratus.countryMeta";
 
 const PAGE_SIZE = 6;
 const INKS = [
@@ -13,9 +12,25 @@ const INKS = [
   { key: "charcoal", color: "#2b2b2b" },
 ];
 
+// Static ISO 3166-1 alpha-2 -> continent lookup for the Continents stat. Deliberately not
+// fetched from a third-party API (the old free REST Countries endpoints were deprecated
+// behind a paid key) — this keeps the stat instant, offline, and dependency-free.
+const CONTINENT_CODE_GROUPS = {
+  Africa: "DZ AO BJ BW BF BI CV CM CF TD KM CG CD CI DJ EG GQ ER SZ ET GA GM GH GN GW KE LS LR LY MG MW ML MR MU YT MA MZ NA NE NG RE RW SH ST SN SC SL SO ZA SS SD TZ TG TN UG EH ZM ZW",
+  Asia: "AF AM AZ BH BD BT BN KH CN CY GE HK IN ID IR IQ IL JP JO KZ KP KR KW KG LA LB MO MY MV MN MM NP OM PK PS PH QA SA SG LK SY TW TJ TH TL TR TM AE UZ VN YE",
+  Europe: "AL AD AT BY BE BA BG HR CZ DK EE FO FI FR DE GI GR GG VA HU IS IE IM IT JE XK LV LI LT LU MT MD MC ME NL MK NO PL PT RO RU SM RS SK SI ES SJ SE CH UA GB AX",
+  "North America": "AI AG AW BS BB BZ BM VG CA KY CR CU CW DM DO SV GL GD GP GT HT HN JM MQ MX MS NI PA PR BL KN LC MF PM VC SX TT TC US VI",
+  Oceania: "AS AU CK FJ PF GU KI MH FM NR NC NZ NU NF MP PW PG PN WS SB TK TO TV VU WF",
+  "South America": "AR BO BR CL CO EC FK GF GY PY PE SR UY VE",
+  Antarctica: "AQ TF BV GS HM",
+};
+const CONTINENT_BY_CODE = {};
+for (const [region, codes] of Object.entries(CONTINENT_CODE_GROUPS)) {
+  codes.split(" ").forEach((cc) => { CONTINENT_BY_CODE[cc] = region; });
+}
+
 // ---- State ----
 let stamps = loadStamps();
-let countryMeta = loadCountryMeta();
 let currentPage = 0;
 let editingId = null;
 let draftStamp = null;
@@ -31,16 +46,6 @@ function loadStamps() {
 }
 function saveStamps() {
   localStorage.setItem(STAMPS_KEY, JSON.stringify(stamps));
-}
-function loadCountryMeta() {
-  try {
-    return JSON.parse(localStorage.getItem(COUNTRY_META_KEY)) || {};
-  } catch (e) {
-    return {};
-  }
-}
-function saveCountryMeta() {
-  localStorage.setItem(COUNTRY_META_KEY, JSON.stringify(countryMeta));
 }
 
 function uuid() {
@@ -265,28 +270,6 @@ searchResultsEl.addEventListener("click", (e) => {
   if (item) openStampModalFromSearch(item);
 });
 
-// ---- Country region lookup (for the Continents stat), cached per country code ----
-async function hydrateCountryMeta(cc) {
-  if (!cc || countryMeta[cc]) return;
-  try {
-    const res = await fetch(`https://restcountries.com/v3.1/alpha/${cc}?fields=region,name`);
-    if (!res.ok) return;
-    const data = await res.json();
-    const info = Array.isArray(data) ? data[0] : data;
-    if (info) {
-      countryMeta[cc] = { region: info.region, name: info.name?.common || cc };
-      saveCountryMeta();
-      renderStats();
-    }
-  } catch (e) {
-    // Offline or blocked — the Continents stat just stays incomplete until next hydrate attempt.
-  }
-}
-function hydrateAllCountryMeta() {
-  const codes = new Set(stamps.filter((s) => s.countryCode).map((s) => s.countryCode.toUpperCase()));
-  codes.forEach((cc) => hydrateCountryMeta(cc));
-}
-
 // ---- Stamp editor modal ----
 const stampModal = document.getElementById("stamp-modal");
 const inkRow = document.getElementById("ink-swatch-row");
@@ -393,7 +376,6 @@ document.getElementById("stamp-save-btn").addEventListener("click", () => {
     currentPage = 0;
   }
   saveStamps();
-  if (draftStamp.countryCode) hydrateCountryMeta(draftStamp.countryCode);
   stampModal.classList.remove("open");
   renderAll();
 });
@@ -462,8 +444,8 @@ function renderStats() {
   document.getElementById("stat-countries").textContent = countries.size;
   const continents = new Set();
   countries.forEach((cc) => {
-    const meta = countryMeta[cc];
-    if (meta && meta.region) continents.add(meta.region);
+    const region = CONTINENT_BY_CODE[cc];
+    if (region) continents.add(region);
   });
   document.getElementById("stat-continents").textContent = continents.size;
 }
@@ -479,7 +461,7 @@ document.getElementById("settings-btn").addEventListener("click", () => settings
 document.getElementById("settings-close-btn").addEventListener("click", () => settingsModal.classList.remove("open"));
 
 document.getElementById("export-btn").addEventListener("click", () => {
-  const payload = { stamps, countryMeta, theme: localStorage.getItem(THEME_KEY) || "day", exportedAt: new Date().toISOString() };
+  const payload = { stamps, theme: localStorage.getItem(THEME_KEY) || "day", exportedAt: new Date().toISOString() };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -501,17 +483,12 @@ document.getElementById("import-file").addEventListener("change", (e) => {
         stamps = imported.stamps;
         saveStamps();
       }
-      if (imported.countryMeta) {
-        countryMeta = imported.countryMeta;
-        saveCountryMeta();
-      }
       if (imported.theme) {
         localStorage.setItem(THEME_KEY, imported.theme);
         applyTheme(imported.theme);
       }
       currentPage = 0;
       renderAll();
-      hydrateAllCountryMeta();
       alert("Import complete.");
     } catch (err) {
       alert("Couldn't import that file: " + err.message);
@@ -524,7 +501,6 @@ document.getElementById("import-file").addEventListener("change", (e) => {
 document.getElementById("clear-data-btn").addEventListener("click", () => {
   if (!confirm("This deletes all Stratus stamps and settings from this browser. Continue?")) return;
   localStorage.removeItem(STAMPS_KEY);
-  localStorage.removeItem(COUNTRY_META_KEY);
   location.reload();
 });
 
@@ -551,4 +527,3 @@ document.getElementById("about-close-btn").addEventListener("click", () => about
 })();
 
 renderAll();
-hydrateAllCountryMeta();

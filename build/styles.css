@@ -17,6 +17,11 @@
   box-sizing: border-box;
 }
 
+/* .btn's own display:inline-flex otherwise beats the UA [hidden] rule at equal specificity. */
+[hidden] {
+  display: none !important;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
