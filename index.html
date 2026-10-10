@@ -9,7 +9,7 @@
   <link rel="icon" type="image/svg+xml" href="icon.svg" />
   <link rel="apple-touch-icon" href="icon.svg" />
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css?v=2026.10.10.2" />
+  <link rel="stylesheet" href="styles.css?v=2026.10.10.3" />
   <script>
     // Set the theme class before first paint so there's no light-mode flash.
     try {
@@ -48,10 +48,26 @@
       <div class="cloud-band cloud-band--6"></div>
     </div>
 
-    <div class="plane plane--1">✈</div>
-    <div class="plane plane--2">✈</div>
+    <div class="plane plane--1"><svg class="plane-icon" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg"><path d="M100 20 L70 14 L70 4 L62 4 L62 15 L40 17 L18 2 L10 2 L20 18 L0 20 L20 22 L10 38 L18 38 L40 23 L62 25 L62 36 L70 36 L70 26 Z" fill="currentColor"/></svg></div>
+    <div class="plane plane--2"><svg class="plane-icon" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg"><path d="M100 20 L70 14 L70 4 L62 4 L62 15 L40 17 L18 2 L10 2 L20 18 L0 20 L20 22 L10 38 L18 38 L40 23 L62 25 L62 36 L70 36 L70 26 Z" fill="currentColor"/></svg></div>
+    <div class="plane plane--3"><svg class="plane-icon" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg"><path d="M100 20 L70 14 L70 4 L62 4 L62 15 L40 17 L18 2 L10 2 L20 18 L0 20 L20 22 L10 38 L18 38 L40 23 L62 25 L62 36 L70 36 L70 26 Z" fill="currentColor"/></svg></div>
+    <div class="plane plane--4"><svg class="plane-icon" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg"><path d="M100 20 L70 14 L70 4 L62 4 L62 15 L40 17 L18 2 L10 2 L20 18 L0 20 L20 22 L10 38 L18 38 L40 23 L62 25 L62 36 L70 36 L70 26 Z" fill="currentColor"/></svg></div>
+    <div class="plane plane--5"><svg class="plane-icon" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg"><path d="M100 20 L70 14 L70 4 L62 4 L62 15 L40 17 L18 2 L10 2 L20 18 L0 20 L20 22 L10 38 L18 38 L40 23 L62 25 L62 36 L70 36 L70 26 Z" fill="currentColor"/></svg></div>
 
     <div class="horizon-haze"></div>
+
+    <div class="ocean">
+      <div class="ocean-surface"></div>
+      <div class="ocean-waves"></div>
+      <div class="boat-fleet">
+        <div class="boat boat--1"><svg class="boat-icon" viewBox="0 0 60 50" xmlns="http://www.w3.org/2000/svg"><path d="M5 40 L55 40 L48 46 L12 46 Z" fill="currentColor"/><path d="M30 40 L30 6 L50 38 Z" fill="currentColor" opacity="0.85"/></svg></div>
+        <div class="boat boat--2"><svg class="boat-icon" viewBox="0 0 90 44" xmlns="http://www.w3.org/2000/svg"><path d="M4 32 L86 32 L76 42 L12 42 Z" fill="currentColor"/><rect x="20" y="12" width="26" height="20" rx="3" fill="currentColor" opacity="0.9"/><rect x="50" y="18" width="14" height="14" rx="2" fill="currentColor" opacity="0.7"/></svg></div>
+        <div class="boat boat--3"><svg class="boat-icon" viewBox="0 0 90 44" xmlns="http://www.w3.org/2000/svg"><path d="M4 32 L86 32 L76 42 L12 42 Z" fill="currentColor"/><rect x="20" y="12" width="26" height="20" rx="3" fill="currentColor" opacity="0.9"/><rect x="50" y="18" width="14" height="14" rx="2" fill="currentColor" opacity="0.7"/></svg></div>
+        <div class="boat boat--4"><svg class="boat-icon" viewBox="0 0 60 50" xmlns="http://www.w3.org/2000/svg"><path d="M5 40 L55 40 L48 46 L12 46 Z" fill="currentColor"/><path d="M30 40 L30 6 L50 38 Z" fill="currentColor" opacity="0.85"/></svg></div>
+        <div class="boat boat--5"><svg class="boat-icon" viewBox="0 0 180 54" xmlns="http://www.w3.org/2000/svg"><path d="M4 40 L170 40 L156 52 L18 52 Z" fill="currentColor"/><rect x="20" y="18" width="34" height="22" fill="currentColor" opacity="0.85"/><rect x="64" y="24" width="26" height="16" fill="currentColor" opacity="0.7"/><rect x="100" y="24" width="26" height="16" fill="currentColor" opacity="0.7"/><rect x="136" y="8" width="16" height="32" fill="currentColor" opacity="0.92"/></svg></div>
+        <div class="boat boat--6"><svg class="boat-icon" viewBox="0 0 180 54" xmlns="http://www.w3.org/2000/svg"><path d="M4 40 L170 40 L156 52 L18 52 Z" fill="currentColor"/><rect x="20" y="18" width="34" height="22" fill="currentColor" opacity="0.85"/><rect x="64" y="24" width="26" height="16" fill="currentColor" opacity="0.7"/><rect x="100" y="24" width="26" height="16" fill="currentColor" opacity="0.7"/><rect x="136" y="8" width="16" height="32" fill="currentColor" opacity="0.92"/></svg></div>
+      </div>
+    </div>
   </div>
 
   <div class="app">
@@ -206,12 +222,12 @@
     <div class="modal__card about-modal__card" role="dialog" aria-modal="true" aria-labelledby="about-modal-title">
       <img class="about-modal__mark" src="icon.svg" alt="" width="56" height="56" />
       <h3 id="about-modal-title">Stratus</h3>
-      <p class="about-modal__version">Version 2026.10.10.2</p>
+      <p class="about-modal__version">Version 2026.10.10.3</p>
       <p class="about-modal__copy">A blanket of stamps across the globe, one place at a time.</p>
       <button type="button" class="btn btn--primary" id="about-close-btn">Close</button>
     </div>
   </div>
 
-  <script src="app.js?v=2026.10.10.2"></script>
+  <script src="app.js?v=2026.10.10.3"></script>
 </body>
 </html>

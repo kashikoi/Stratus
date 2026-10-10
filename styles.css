@@ -113,20 +113,40 @@ html.mobile body {
   to { transform: translateX(6%); }
 }
 
-.plane {
-  position: absolute;
-  font-size: 22px;
-  opacity: 0.55;
-  transform: scaleX(-1);
-  animation: flyAcross linear infinite;
+/* Generic left<->right drift used by planes and boats; icons are drawn nose-right by
+   default, so only the reverse direction needs the scaleX(-1) flip below. */
+@keyframes driftRight {
+  from { left: -10%; }
+  to { left: 110%; }
+}
+@keyframes driftLeft {
+  from { left: 110%; }
+  to { left: -10%; }
 }
 
-.plane--1 { top: 14%; animation-duration: 55s; }
-.plane--2 { top: 36%; font-size: 16px; opacity: 0.4; animation-duration: 80s; animation-delay: -30s; }
+.plane {
+  position: absolute;
+  color: rgba(255, 255, 255, 0.8);
+  filter: drop-shadow(0 1px 2px rgba(20, 30, 45, 0.2));
+  animation: driftRight linear infinite;
+}
 
-@keyframes flyAcross {
-  from { left: -5%; }
-  to { left: 105%; }
+.plane-icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.plane--1 { top: 9%; width: 46px; height: 18px; opacity: 0.6; animation-duration: 50s; }
+.plane--2 { top: 23%; width: 28px; height: 11px; opacity: 0.4; animation-duration: 95s; animation-delay: -25s; }
+.plane--3 { top: 16%; width: 58px; height: 23px; opacity: 0.7; animation-name: driftLeft; animation-duration: 68s; animation-delay: -15s; }
+.plane--4 { top: 31%; width: 22px; height: 9px; opacity: 0.3; animation-duration: 120s; animation-delay: -60s; }
+.plane--5 { top: 6%; width: 36px; height: 14px; opacity: 0.5; animation-name: driftLeft; animation-duration: 78s; animation-delay: -40s; }
+
+/* Reverse-direction planes face left to match their travel direction. */
+.plane--3,
+.plane--5 {
+  transform: scaleX(-1);
 }
 
 .horizon-haze {
@@ -138,9 +158,79 @@ html.mobile body {
   background: linear-gradient(180deg, rgba(205, 216, 228, 0) 0%, rgba(205, 216, 228, 0.5) 100%);
 }
 
+/* ---- Ocean (lower third): gentle waves plus a small fleet of drifting boats ---- */
+.ocean {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 22%;
+  overflow: hidden;
+}
+
+.ocean-surface {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(143, 160, 184, 0) 0%, rgba(90, 120, 150, 0.55) 18%, rgba(45, 75, 105, 0.82) 100%);
+}
+
+.ocean-waves {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(100deg, rgba(255, 255, 255, 0.14) 0, rgba(255, 255, 255, 0.14) 2px, transparent 2px, transparent 40px);
+  opacity: 0.5;
+  animation: driftWaves 16s linear infinite;
+}
+
+@keyframes driftWaves {
+  from { background-position-x: 0; }
+  to { background-position-x: 400px; }
+}
+
+.boat-fleet {
+  position: absolute;
+  inset: 0;
+}
+
+.boat {
+  position: absolute;
+  color: rgba(20, 35, 55, 0.6);
+  animation: driftRight linear infinite;
+}
+
+.boat-icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+  animation: boatBob 3.4s ease-in-out infinite;
+  transform-origin: 50% 85%;
+}
+
+@keyframes boatBob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-2px) rotate(-1.2deg); }
+}
+
+.boat--1 { bottom: 68%; width: 46px; height: 26px; opacity: 0.45; animation-duration: 150s; }
+.boat--2 { bottom: 48%; width: 78px; height: 36px; opacity: 0.6; animation-name: driftLeft; animation-duration: 120s; animation-delay: -40s; }
+.boat--3 { bottom: 26%; width: 60px; height: 34px; opacity: 0.7; animation-duration: 95s; animation-delay: -20s; }
+.boat--4 { bottom: 58%; width: 40px; height: 22px; opacity: 0.4; animation-name: driftLeft; animation-duration: 170s; animation-delay: -70s; }
+.boat--5 { bottom: 10%; width: 150px; height: 46px; opacity: 0.85; animation-duration: 200s; animation-delay: -90s; }
+.boat--6 { bottom: 2%; width: 190px; height: 52px; opacity: 0.92; animation-name: driftLeft; animation-duration: 230s; animation-delay: -110s; }
+
+/* Reverse-direction boats face left to match their travel direction. */
+.boat--2,
+.boat--4,
+.boat--6 {
+  transform: scaleX(-1);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .cloud-band,
-  .plane {
+  .plane,
+  .boat,
+  .boat-icon,
+  .ocean-waves {
     animation: none;
   }
 }
@@ -696,6 +786,14 @@ html.twilight .cloud-band {
   background: linear-gradient(90deg, rgba(255, 221, 200, 0) 0%, rgba(255, 221, 200, 0.8) 20%, rgba(255, 221, 200, 0.8) 80%, rgba(255, 221, 200, 0) 100%);
 }
 
+html.twilight .ocean-surface {
+  background: linear-gradient(180deg, rgba(201, 143, 160, 0) 0%, rgba(140, 90, 120, 0.55) 18%, rgba(60, 40, 80, 0.85) 100%);
+}
+
+html.twilight .boat {
+  color: rgba(40, 25, 50, 0.65);
+}
+
 html.twilight .modal__card {
   background: #2a2a46;
   color: #f1f1fb;
@@ -714,6 +812,14 @@ html.dark .stars-layer {
 
 html.dark .cloud-band {
   background: linear-gradient(90deg, rgba(210, 222, 240, 0) 0%, rgba(210, 222, 240, 0.45) 20%, rgba(210, 222, 240, 0.45) 80%, rgba(210, 222, 240, 0) 100%);
+}
+
+html.dark .ocean-surface {
+  background: linear-gradient(180deg, rgba(20, 35, 65, 0) 0%, rgba(10, 22, 48, 0.65) 18%, rgba(4, 10, 26, 0.92) 100%);
+}
+
+html.dark .boat {
+  color: rgba(5, 12, 28, 0.75);
 }
 
 html.dark {
