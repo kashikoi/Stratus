@@ -1,0 +1,12 @@
+{
+  "name": "Stratus",
+  "short_name": "Stratus",
+  "description": "Search anywhere on earth and collect a personalized passport stamp.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#5b6b82",
+  "theme_color": "#5b6b82",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

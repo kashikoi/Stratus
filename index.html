@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- Fixed width forces phones/tablets to render the desktop layout zoomed out. -->
+  <meta name="viewport" content="width=1140" />
+  <title>Stratus</title>
+  <meta name="theme-color" content="#5b6b82" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css?v=2026.10.10.1" />
+  <script>
+    // Set the theme class before first paint so there's no light-mode flash.
+    try {
+      const preference = localStorage.getItem("stratus.theme") || "day";
+      let effectiveTheme = preference === "dark" ? "night" : preference;
+      if (preference === "random") {
+        const themes = ["day", "twilight", "night"];
+        effectiveTheme = themes[Math.floor(Math.random() * themes.length)];
+        window.__stratusInitialRandomTheme = effectiveTheme;
+      }
+      if (effectiveTheme === "night") document.documentElement.classList.add("dark", "night");
+      else if (effectiveTheme === "twilight") document.documentElement.classList.add("twilight");
+    } catch (e) {}
+
+    // Detect small screens early so the layout can switch before paint.
+    (function () {
+      if (window.innerWidth <= 720) {
+        document.documentElement.classList.add("mobile");
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div class="sky" aria-hidden="true">
+    <div class="stars-layer">
+      <div class="stars stars--sm"></div>
+      <div class="stars stars--lg"></div>
+    </div>
+
+    <div class="cloud-deck">
+      <div class="cloud-band cloud-band--1"></div>
+      <div class="cloud-band cloud-band--2"></div>
+      <div class="cloud-band cloud-band--3"></div>
+      <div class="cloud-band cloud-band--4"></div>
+      <div class="cloud-band cloud-band--5"></div>
+      <div class="cloud-band cloud-band--6"></div>
+    </div>
+
+    <div class="plane plane--1">✈</div>
+    <div class="plane plane--2">✈</div>
+
+    <div class="horizon-haze"></div>
+  </div>
+
+  <div class="app">
+    <header class="app__header">
+      <div class="brand">
+        <h1 class="app__title">Stratus <span class="app__version" id="app-version"></span></h1>
+        <p class="app__subtitle">A blanket of stamps across the globe, one place at a time.</p>
+      </div>
+      <div class="app__actions">
+        <button type="button" class="btn btn--ghost" id="settings-btn">Settings</button>
+        <a class="btn btn--ghost" href="tutorial.html">Tutorial</a>
+      </div>
+    </header>
+
+    <section class="search-bar">
+      <input type="search" id="search-input" class="search-bar__input" placeholder="Search for a country, state, landmark, or city…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="stratus-place-search" data-lpignore="true" data-1p-ignore data-form-type="other" />
+      <button type="button" class="btn btn--primary" id="search-btn">Search</button>
+      <button type="button" class="btn btn--ghost" id="add-manual-btn">Add Manually</button>
+    </section>
+
+    <div id="search-results" class="search-results"></div>
+    <p class="osm-attribution">Location search powered by <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors.</p>
+
+    <section class="passport-stats" id="passport-stats">
+      <div class="stat-card">
+        <span class="stat-card__value" id="stat-stamps">0</span>
+        <span class="stat-card__label">Stamps</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__value" id="stat-countries">0</span>
+        <span class="stat-card__label">Countries</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__value" id="stat-continents">0</span>
+        <span class="stat-card__label">Continents</span>
+      </div>
+    </section>
+
+    <section class="passport" id="passport">
+      <div class="passport-page" id="passport-page"></div>
+      <div class="passport-pager">
+        <button type="button" class="btn btn--ghost btn--small" id="page-prev-btn">&larr; Page</button>
+        <span class="passport-pager__label" id="page-label">Page 1 of 1</span>
+        <button type="button" class="btn btn--ghost btn--small" id="page-next-btn">Page &rarr;</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Create / edit stamp modal -->
+  <div class="modal" id="stamp-modal">
+    <div class="modal__card modal__card--wide" role="dialog" aria-modal="true" aria-labelledby="stamp-modal-title">
+      <h3 id="stamp-modal-title">New Stamp</h3>
+      <div class="stamp-editor">
+        <div class="stamp-editor__preview" id="stamp-preview"></div>
+        <div class="stamp-editor__fields">
+          <label class="field">
+            <span>Place name</span>
+            <input type="text" id="stamp-name-input" placeholder="e.g. Kyoto, Japan" />
+          </label>
+
+          <label class="field">
+            <span>Type</span>
+            <select id="stamp-type-input">
+              <option value="country">Country</option>
+              <option value="state">State / Province</option>
+              <option value="city">City</option>
+              <option value="landmark">Landmark</option>
+              <option value="nature">Natural wonder</option>
+              <option value="other">Other</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Country code <small>(2-letter, for the flag)</small></span>
+            <input type="text" id="stamp-country-input" maxlength="2" placeholder="e.g. JP" />
+          </label>
+
+          <label class="field">
+            <span>Date visited</span>
+            <input type="date" id="stamp-date-input" />
+          </label>
+
+          <label class="field">
+            <span>Note</span>
+            <textarea id="stamp-note-input" rows="2" placeholder="What made it memorable?"></textarea>
+          </label>
+
+          <div class="field">
+            <span>Ink color</span>
+            <div class="swatch-row" id="ink-swatch-row"></div>
+          </div>
+
+          <div class="field">
+            <span>Shape</span>
+            <div class="swatch-row" id="shape-swatch-row">
+              <button type="button" class="shape-chip" data-shape="circle">Circle</button>
+              <button type="button" class="shape-chip" data-shape="scallop">Scallop</button>
+              <button type="button" class="shape-chip" data-shape="rect">Visa</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal__actions">
+        <button type="button" class="btn btn--danger" id="stamp-delete-btn" hidden>Delete</button>
+        <div class="modal__actions-right">
+          <button type="button" class="btn btn--ghost" id="stamp-cancel-btn">Cancel</button>
+          <button type="button" class="btn btn--primary" id="stamp-save-btn">Save Stamp</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings modal -->
+  <div class="modal" id="settings-modal">
+    <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <h3 id="settings-title">Settings</h3>
+
+      <div class="settings-row">
+        <span>Atmosphere</span>
+        <div class="theme-picker" id="theme-picker">
+          <button type="button" class="theme-chip" data-theme-val="day">Day</button>
+          <button type="button" class="theme-chip" data-theme-val="twilight">Twilight</button>
+          <button type="button" class="theme-chip" data-theme-val="night">Night</button>
+          <button type="button" class="theme-chip" data-theme-val="random">Random</button>
+        </div>
+      </div>
+
+      <div class="settings-row">
+        <span>Backup</span>
+        <div class="settings-row__actions">
+          <button type="button" class="btn btn--ghost btn--small" id="export-btn">Export JSON</button>
+          <button type="button" class="btn btn--ghost btn--small" id="import-btn">Import JSON</button>
+          <input type="file" id="import-file" accept="application/json" hidden />
+        </div>
+      </div>
+
+      <div class="settings-row">
+        <span>Danger zone</span>
+        <button type="button" class="btn btn--danger btn--small" id="clear-data-btn">Clear All Data</button>
+      </div>
+
+      <button type="button" class="link-btn" id="about-link">About Stratus</button>
+
+      <div class="modal__actions">
+        <button type="button" class="btn btn--primary" id="settings-close-btn">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- About modal -->
+  <div class="modal" id="about-modal">
+    <div class="modal__card about-modal__card" role="dialog" aria-modal="true" aria-labelledby="about-modal-title">
+      <img class="about-modal__mark" src="icon.svg" alt="" width="56" height="56" />
+      <h3 id="about-modal-title">Stratus</h3>
+      <p class="about-modal__version">Version 2026.10.10.1</p>
+      <p class="about-modal__copy">A blanket of stamps across the globe, one place at a time.</p>
+      <button type="button" class="btn btn--primary" id="about-close-btn">Close</button>
+    </div>
+  </div>
+
+  <script src="app.js?v=2026.10.10.1"></script>
+</body>
+</html>

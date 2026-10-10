@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1140" />
+  <title>Stratus &ndash; Tutorial</title>
+  <meta name="theme-color" content="#5b6b82" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css?v=2026.10.10.1" />
+  <link rel="stylesheet" href="tutorial.css?v=2026.10.10.1" />
+  <script>
+    // Set the theme class before first paint so there's no flash of the wrong atmosphere.
+    try {
+      const pref = localStorage.getItem("stratus.theme") || "day";
+      let activeMode = pref === "dark" ? "night" : pref;
+      if (pref === "random") {
+        const themes = ["day", "twilight", "night"];
+        activeMode = themes[Math.floor(Math.random() * themes.length)];
+      }
+      if (activeMode === "night") document.documentElement.classList.add("night", "dark");
+      else if (activeMode === "twilight") document.documentElement.classList.add("twilight");
+    } catch (e) {}
+  </script>
+</head>
+<body class="tutorial-body">
+  <div class="sky" aria-hidden="true">
+    <div class="stars-layer">
+      <div class="stars stars--sm"></div>
+      <div class="stars stars--lg"></div>
+    </div>
+    <div class="cloud-deck">
+      <div class="cloud-band cloud-band--1"></div>
+      <div class="cloud-band cloud-band--2"></div>
+      <div class="cloud-band cloud-band--3"></div>
+      <div class="cloud-band cloud-band--4"></div>
+      <div class="cloud-band cloud-band--5"></div>
+      <div class="cloud-band cloud-band--6"></div>
+    </div>
+    <div class="plane plane--1">✈</div>
+    <div class="plane plane--2">✈</div>
+    <div class="horizon-haze"></div>
+  </div>
+
+  <main class="tutorial">
+    <header class="app__header">
+      <div class="brand">
+        <h1 class="app__title">Stratus</h1>
+        <p class="app__subtitle">The 3-minute tour.</p>
+      </div>
+      <div class="app__actions">
+        <button type="button" class="icon-btn" id="theme-toggle" title="Toggle dark mode" aria-label="Toggle dark mode">&#127769;</button>
+        <a class="btn btn--ghost" href="index.html">&larr; Back to app</a>
+      </div>
+    </header>
+
+    <section class="tut-hero">
+      <div class="tut-hero__badge">Welcome aboard</div>
+      <h2 class="tut-hero__title">Every border you've crossed, stamped in your own passport.</h2>
+      <p class="tut-hero__text">
+        Modern passports rarely get stamped anymore, so Stratus fills that void &mdash; search any
+        country, state, landmark, or city and turn it into a personalized ink stamp, laid out
+        across pages just like a real passport. No accounts, no backend, nothing to sync. Here's
+        the whole thing in about three minutes.
+      </p>
+    </section>
+
+    <nav class="tut-nav" aria-label="Jump to a topic">
+      <a href="#step-1">Search a place</a>
+      <a href="#step-2">Design your stamp</a>
+      <a href="#step-3">Your passport pages</a>
+      <a href="#step-4">Stats</a>
+      <a href="#step-5">Add manually</a>
+      <a href="#step-6">Backup &amp; settings</a>
+    </nav>
+
+    <ol class="tut-steps">
+      <li class="tut-step" id="step-1">
+        <div class="tut-step__num">1</div>
+        <div class="tut-step__body">
+          <h3>Search a place</h3>
+          <p>
+            Type a country, state, city, or landmark into the search bar &mdash; Stratus looks it
+            up with OpenStreetMap and shows matches with their full location so you pick the right
+            one.
+          </p>
+          <p class="tut-note">
+            Search needs no account or API key; it queries the free, public OpenStreetMap
+            Nominatim service directly from your browser.
+          </p>
+        </div>
+      </li>
+
+      <li class="tut-step" id="step-2">
+        <div class="tut-step__num">2</div>
+        <div class="tut-step__body">
+          <h3>Design your stamp</h3>
+          <p>
+            Pick an ink color and a shape &mdash; classic circle, scalloped, or a visa-style
+            rectangle &mdash; set the date you visited, and jot a short note. The preview updates
+            live so you see exactly what lands on the page.
+          </p>
+          <div class="tut-chips">
+            <span class="tut-chip">🖋️ 6 ink colors</span>
+            <span class="tut-chip">⬭ 3 shapes</span>
+          </div>
+        </div>
+      </li>
+
+      <li class="tut-step" id="step-3">
+        <div class="tut-step__num">3</div>
+        <div class="tut-step__body">
+          <h3>Flip through your passport pages</h3>
+          <p>
+            Saved stamps fill a passport page, newest first, six to a page &mdash; just like the
+            real thing. Use the page arrows to flip back through your travel history, and tap any
+            stamp to edit or remove it.
+          </p>
+        </div>
+      </li>
+
+      <li class="tut-step" id="step-4">
+        <div class="tut-step__num">4</div>
+        <div class="tut-step__body">
+          <h3>Track your stats</h3>
+          <p>
+            The header above your passport tallies total stamps, countries visited, and continents
+            covered &mdash; continent data is looked up automatically the first time you stamp a
+            country.
+          </p>
+        </div>
+      </li>
+
+      <li class="tut-step" id="step-5">
+        <div class="tut-step__num">5</div>
+        <div class="tut-step__body">
+          <h3>Add a place manually</h3>
+          <p>
+            Can't find somewhere, or want to work offline? Hit <strong>Add Manually</strong> and
+            type in the name, type, and country code yourself &mdash; the stamp designer works
+            exactly the same either way.
+          </p>
+        </div>
+      </li>
+
+      <li class="tut-step" id="step-6">
+        <div class="tut-step__num">6</div>
+        <div class="tut-step__body">
+          <h3>Back up your passport</h3>
+          <p>
+            Stratus stores everything only in this browser's local storage. Use
+            <strong>Export JSON</strong> in Settings regularly to save a backup, and
+            <strong>Import JSON</strong> to restore it anywhere. Settings also has day, twilight,
+            and night atmospheres to match your sky.
+          </p>
+        </div>
+      </li>
+    </ol>
+
+    <section class="tut-outro">
+      <h2>That's the whole app.</h2>
+      <p>Go find the first stamp for your passport.</p>
+      <a class="btn tut-outro__btn" href="index.html">Take me back &rarr;</a>
+    </section>
+  </main>
+
+  <script>
+    // Tutorial page has no app.js; just enough logic to cycle + persist the atmosphere.
+    (function () {
+      const btn = document.getElementById("theme-toggle");
+      const modes = ["day", "twilight", "night"];
+      function apply(mode) {
+        document.documentElement.classList.remove("night", "dark", "twilight");
+        if (mode === "night") document.documentElement.classList.add("night", "dark");
+        else if (mode === "twilight") document.documentElement.classList.add("twilight");
+        try { localStorage.setItem("stratus.theme", mode); } catch (e) {}
+        btn.textContent = mode === "night" ? "\u2600\uFE0F" : mode === "twilight" ? "\uD83C\uDF19" : "\uD83C\uDF05";
+      }
+      const current = document.documentElement.classList.contains("night") ? "night" : document.documentElement.classList.contains("twilight") ? "twilight" : "day";
+      let idx = modes.indexOf(current) === -1 ? 0 : modes.indexOf(current);
+      apply(modes[idx]);
+      btn.addEventListener("click", () => {
+        idx = (idx + 1) % modes.length;
+        apply(modes[idx]);
+      });
+    })();
+  </script>
+</body>
+</html>
