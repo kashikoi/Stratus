@@ -177,7 +177,17 @@ html.mobile body {
 .ocean-waves {
   position: absolute;
   inset: 0;
-  background-image: repeating-linear-gradient(100deg, rgba(255, 255, 255, 0.14) 0, rgba(255, 255, 255, 0.14) 2px, transparent 2px, transparent 40px);
+  background-image: repeating-linear-gradient(
+    100deg,
+    transparent 0,
+    transparent 14px,
+    rgba(255, 255, 255, 0.1) 19px,
+    rgba(255, 255, 255, 0.16) 21px,
+    rgba(255, 255, 255, 0.1) 23px,
+    transparent 28px,
+    transparent 40px
+  );
+  filter: blur(1px);
   opacity: 0.5;
   animation: driftWaves 16s linear infinite;
 }
